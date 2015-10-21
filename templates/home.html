@@ -7,14 +7,13 @@
 <style>
 {% block style %}
  div.jumbotron {
-  background: linear-gradient(to top, #58434F, #00421F); 
+  background: black; 
   color:#FFF;
 }
 #footer {
-    position: fixed; /* Фиксированное положение */
     left: 0; bottom: 0; /* Левый нижний угол */
     padding: 10px; /* Поля вокруг текста */
-    color: #fff; /* Цвет текста */
+    color: black; /* Цвет текста */
     width: 100%; /* Ширина слоя */
    }
 {% endblock %}
@@ -103,13 +102,13 @@
 
 
 </div> 
-<div id='footer'>
+<div id='footer' class="col-sm-12">
     <hr 'color:#FFF' "size: 10px" 'align:bottom'/>
 <div class="col-sm-3">
 <p class ='lead text-align-center' => Made by Kirill Burovin </p>
 
 </div>
-<div class="col-sm-4 pull-right ">
+<div class="col-sm-6 pull-right ">
   <div class=" pull-left">
 <p class ='lead ' => Find me there: </p>
 </div>

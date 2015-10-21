@@ -12,7 +12,7 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
-    <title>{% block head_title %} {% endblock %} Stream Days</title>
+    <title>{% block head_title %} {% endblock %} Магазин</title>
     {% include 'head_css.html' %}
 
 <style>
@@ -32,10 +32,21 @@
 
   <!-- <body style="color: #FFF;"> -->
 </head>
-<body style='background: linear-gradient(to top, #58434F, #56434E)';>
+<body >
     
     {% include 'navbar.html' %}
 
+{% if messages %}
+<div class = "container">
+  <div class="alert alert-success text-center">
+
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </div>
+  </div>
+
+{% endif %}
  {% block jumbotron %}
       {% endblock %}
     <div class="container">
@@ -50,7 +61,13 @@
     </div> 
 
 {% include 'javascripts.html' %}
-    
+
+<script >
+$(document).ready(function(){
+{% block jquery %}
+{% endblock %}
+});
+</script>
     
   </body>
 </html>

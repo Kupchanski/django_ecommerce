@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+<script>
+{% block jquery %}
+
+function setPrice() {
+	var price = $(".variation_select option:selected").attr('data-price')
+	
+	var sale_price = $(".variation_select option:selected").attr('sale-price')
+	if (sale_price != 'None' && sale_price != '' && sale_price != null){
+		$("#price").html("<h3>"+ sale_price + "<small class = 'og_price' style='color:red; text-decoration:line-through;'> " + price +"</small></h3>");
+	} else {
+		$("#price").html(price);
+	}
+
+}
+setPrice()
+$(".variation_select").change(function(){
+setPrice()
+})
+{% endblock %}
+</script>
+
+{% block content %}
+<div class = "row">
+<div class = "col-sm-8">
+<h2>{{object.title}}</h2>
+
+{% if object.productimage_set.count > 0 %}
+
+<div>
+	{% for img in object.productimage_set.all %}
+<img class = "img-responsive" src= '{{img.image.url}}'/>
+{%endfor%}
+</div>
+{% endif%}
+
+<p class ="lead">
+	{{object.description}}
+</p>
+</div>
+
+
+
+<!-- Product Sidebar -->
+<div class = "col-sm-4">
+
+	
+{% if object.variation_set.count > 1 %}
+<h3 id='price'>{{object.variation_set.first.price}}</h3>
+<select class = "form-control variation_select">
+{% for var in object.variation_set.all %}
+<option sale-price = "{{ var.sale_price }}" data-price = "{{ var.price }}" value ="{{ var.id}}">{{var}}</option>
+{% endfor %}
+</select>
+{% else %}
+<h3 id='price'>{% if object.variation_set.first.sale_price %}
+{{object.variation_set.first.sale_price}}
+<small class = 'og_price' >{{object.variation_set.first.price}}</small>
+{% else %}
+{{object.variation_set.first.price}}
+{% endif %}
+</h3>
+{% endif %}
+<br/>
+<a href = "#">Добавить в корзину</a>
+<br/>
+<hr/>
+<p>Рассказать друзьям<br/>
+<a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}">
+<i class="fa fa-facebook-square fa-3x"></i>
+</a>
+<a href="https://vk.com/share.php?url={{ request.build_absolute_uri }}">
+<i class="fa fa-vk fa-3x"></i>
+</a>
+</p>
+<hr/>
+<h4>С этим товаром так же покупают:</h4>
+
+
+
+
+</div>
+
+
+
+<!-- Product Sidebar -->
+</div>
+
+{% endblock %}

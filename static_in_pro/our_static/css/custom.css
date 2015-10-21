@@ -1,4 +1,7 @@
 .text-align-center {
 	text-align: center;
 }
-
+.og_price {
+	color:red;
+	text-decoration:line-through;
+}

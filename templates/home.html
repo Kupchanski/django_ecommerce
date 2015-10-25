@@ -6,49 +6,99 @@
 
 <style>
 {% block style %}
- div.jumbotron {
-  background: black; 
-  color:#FFF;
-}
 #footer {
     left: 0; bottom: 0; /* Левый нижний угол */
     padding: 10px; /* Поля вокруг текста */
     color: black; /* Цвет текста */
     width: 100%; /* Ширина слоя */
    }
+.jumbotron {
+  min-height: 300px;
+  color: #FFF;
+  text-shadow:-1px 0px black, 0px -1px black, 1px 0px black, 0px 1px black, -1px -1px black, 1px 1px black, -1px 1px black, 1px -1px black, 1px 0px 4px black, 0px 0px 2px black, 0px 0px 3px black, 0px 0px 2px black, 0px 0px 3px black, 0px 0px 4px black, 0px 0px 4px black, 0px 0px 4px black, 0px 0px 4px black, 0px 0px 4px black; 
+  {% if featured_image.make_image_background %} 
+  background: url('{{ featured_image.image.url}}');
+  background-repeat: no-repeat;
+  background-color: black;
+  background-size:cover;
+  /*background-position-y:-200px;*/
+  {% if featured_image.text_css_color %} 
+  color: #{{featured_image.text_css_color}}
+
+
+  {% endif %}
+  {% endif %}
+
+}
 {% endblock %}
+
 </style>
 
 {% block jumbotron %}
+{% if featured_image %}
+    <div class="jumbotron" >
+        <div class="container">
+              <div class = "row">
+                <div class = "col-xs-12 text-center{% if featured_image.text_right %} pull-right {% endif %}">
+                <h1>{{featured_image.product.title }}</h1>
+                <p>{{ featured_image.product.description }} </p>
+                
+                <p>
+                  <a class="btn btn-lg btn-primary" href="{{ featured_image.product.get_absolute_url }}" role="button"> Подробнее  &raquo;</a>
+                </p>
+             
+               </div>
+               {% if not featured_image.make_image_background %} 
+        <div class = 'col-sm-6'>
+         <img src="{{featured_image.image.url}}" class = 'img-responsive'/>
+         </div>
+          {% endif %}
+        </div>
+        </div>
+        </div>
 
-<div class="jumbotron" >
-<div class="container">
-      <div class = "row">
-      	<div class = "col-xs-6">
-        <h1>Приветствую на Stream Days</h1>
-        <p>Меня зовут Кирилл Буровин. </p>
-        <p>Я разработчик веб-приложений на Python/Django</p>
-        <p>А это мой небольшой сайт-визитка. Здесь я буду выкладывать ссылки на мои будущие проекты, и собирать портфолио.</p>
-        <p>Связаться со мной можно через форму в шапке сайта или через указанные снизу контакты. </p>
-        <p> Спасибо, что заглянули! </p>
-       <!--  <p>
-          <a class="btn btn-lg btn-primary" href="accounts/register" role="button">Зарегистрироваться!  &raquo;</a>
-        </p>
-      -->
-       </div>
-<div class = 'col-sm-6'>
-	<iframe src="http://www.twitch.tv/kup9_nps/embed" frameborder="0" scrolling="no" height="450" width="620"></iframe><a href="http://www.twitch.tv/kup9_nps?tt_medium=live_embed&tt_content=text_link" style="padding:2px 0px 4px; display:block; width:345px; font-weight:normal; font-size:10px;text-decoration:underline;">Watch live video from Kup9_NpS on www.twitch.tv</a>
- </div>
-</div>
-</div>
-</div>
+{% else %}
+    <div class="jumbotron" >
+    <div class="container">
+          <div class = "row">
+          	<div class = "col-xs-6">
+            <h1>Приветствую на Stream Days</h1>
+            <p>Меня зовут Кирилл Буровин. </p>
+            <p>Я разработчик веб-приложений на Python/Django</p>
+            <p>А это мой небольшой сайт-визитка. Здесь я буду выкладывать ссылки на мои будущие проекты, и собирать портфолио.</p>
+            <p>Связаться со мной можно через форму в шапке сайта или через указанные снизу контакты. </p>
+            <p> Спасибо, что заглянули! </p>
+           <!--  <p>
+              <a class="btn btn-lg btn-primary" href="accounts/register" role="button">Зарегистрироваться!  &raquo;</a>
+            </p>
+          -->
+           </div>
+    <div class = 'col-sm-6'>
+    	<iframe src="http://www.twitch.tv/kup9_nps/embed" frameborder="0" scrolling="no" height="450" width="620"></iframe><a href="http://www.twitch.tv/kup9_nps?tt_medium=live_embed&tt_content=text_link" style="padding:2px 0px 4px; display:block; width:345px; font-weight:normal; font-size:10px;text-decoration:underline;">Watch live video from Kup9_NpS on www.twitch.tv</a>
+     </div>
+    </div>
+    </div>
+    </div>
+
+{% endif %}
 
 {% endblock %}
 
 
 {% block content%}
 
-{% if request.user.is_authenticated %}
+<div class = "row">
+  <h2> Рекомендуемые товары </h2>
+{% include "products/products.html" with object_list=products col_class_set='col-sm-3'%}
+
+  <h2> Новинки </h2>
+{% include "products/products.html" with object_list=products2 col_class_set='col-sm-3'%}
+
+
+
+
+
+<!-- {% if request.user.is_authenticated %}
 <h1 class="col-xs-3 pull-right " >Вы вошли!</h1>
 
       {% if queryset %}
@@ -98,7 +148,7 @@
   <img src="{% static 'img/bootstrap.png' %}" class = 'img-responsive, align-center'/>
 </center>
 </div>
-
+ -->
 
 
 </div> 

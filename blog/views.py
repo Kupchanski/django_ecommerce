@@ -4,16 +4,26 @@ from django.views.generic import ListView, DetailView
 from .forms import SighUpForm, ContactForm
 from django.core.mail import send_mail
 from django.conf import settings
-from .models import SighUp
 
+from .models import SighUp
+from products.models import  ProductFeatured, Product
 
 
 def home(request):
 	title ='Войти как гость'
+
+	featured_image = ProductFeatured.objects.filter(active=True).order_by("?").first()
+	products = Product.objects.all().order_by("?")[:6]
+	products2 = Product.objects.all().order_by("?")[:6]
+
+
 	form = SighUpForm(request.POST or None)
 	context = {
 	"title": title,
-	'form': form
+	'form': form,
+	'featured_image': featured_image,
+	'products': products,
+	'products2': products2
 	}
 	
 	if form.is_valid():
@@ -28,12 +38,7 @@ def home(request):
 			"title": 'Thank You'
 		}
 
-	# if request.user.is_authenticated() and request.user.is_staff:
-	# 	#print(SighUp.objects.all())
-	# 	queryset = SighUp.objects.all().order_by('-timestamp').filter(full_name__icontains ='Kup9')
-	# 	context = {
-	# 	 'queryset': queryset
-	# 	}
+
 
 	return render(request, "home.html", context)
 

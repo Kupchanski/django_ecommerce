@@ -2,16 +2,8 @@
 
 
 {% block content %}
-
-<table class='table'>
-{% for object in object_list %}
-<tr>
-	<td><a href = '{{object.get_absolute_url}}'>{{object.title }}</a></td>
-		</tr>
-
-{% endfor %}
-
-
+<h1> All products <small><a href ='{% url "categories" %}'>Categories</a> </small></h1>
+{% include "products/products.html" with object_list=object_list %}
 
 
 {% endblock %}

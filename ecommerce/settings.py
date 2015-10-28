@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     #my apps
     'blog',
     'products',
+    'carts',
     #3rd party
     'disqus',
     'crispy_forms',

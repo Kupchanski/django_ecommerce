@@ -43,25 +43,35 @@ setPrice()
 <!-- Product Sidebar -->
 		<div class = "col-sm-4">
 
-			
-		{% if object.variation_set.count > 1 %}
-		<h3 id='price'>{{object.variation_set.first.price}}</h3>
-		<select class = "form-control variation_select">
-		{% for var in object.variation_set.all %}
-		<option sale-price = "{{ var.sale_price }}" data-price = "{{ var.price }}" value ="{{ var.id}}">{{var}}</option>
-		{% endfor %}
-		</select>
+		<form id='add-form' method='GET' action="{% url 'cart' %}">	
+			{% if object.variation_set.count > 1 %}
+			<h3 id='price'>{{object.variation_set.first.price}}</h3>
+		
+
+				<select name="item" class = "form-control variation_select">
+				{% for var in object.variation_set.all %}
+				<option  sale-price = "{{ var.sale_price }}" data-price = "{{ var.price }}" value ="{{ var.id}}">{{var}}</option>
+				{% endfor %}
+				</select>
+
 		{% else %}
-		<h3 id='price'>{% if object.variation_set.first.sale_price %}
-		{{object.variation_set.first.sale_price}}
-		<small class = 'og_price' >{{object.variation_set.first.price}}</small>
-		{% else %}
-		{{object.variation_set.first.price}}
-		{% endif %}
+			<input type="hidden" name='item' value = '{{object.variation_set.first.id}}'/>
+			<h3 id='price'>{% if object.variation_set.first.sale_price %}
+			{{object.variation_set.first.sale_price}}
+			<small class = 'og_price' >{{object.variation_set.first.price}}</small>
+			{% else %}
+
+			{{object.variation_set.first.price}}
+			{% endif %}
 		</h3>
+
 		{% endif %}
 		<br/>
-		<a href = "#">Добавить в корзину</a>
+		<input class= "form-control" type="number" name='qty' value = '1'/>
+	<br/>
+	<input id='submit-btn' type='submit' value='В корзину' class='btn btn-default' />
+	</form>
+
 		<br/>
 		<hr/>
 		<p>Рассказать друзьям<br/>

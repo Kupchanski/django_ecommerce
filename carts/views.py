@@ -1,4 +1,5 @@
-from django.http import HttpResponseRedirect, Http404
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.views.generic import View
 from django.shortcuts import render, get_object_or_404
 from django.views.generic.detail import SingleObjectMixin
@@ -33,8 +34,11 @@ class CartView(SingleObjectMixin, View):
 
 	def get (self, request, *args, **kwargs):
 		cart = self.get_object()
+
 		item_id = request.GET.get('item')
-		delete_item = request.GET.get('delete')
+		delete_item = request.GET.get('delete', False)
+		flash_message = ''
+		item_added = False
 		if item_id:
 			item_instance = get_object_or_404(Variation, id = item_id)
 			qty = request.GET.get('qty', 1)     #quantity
@@ -44,12 +48,44 @@ class CartView(SingleObjectMixin, View):
 			except:
 				raise Http404
 
-			cart_item = CartItem.objects.get_or_create(cart=cart, item = item_instance)[0]
+			cart_item, created = CartItem.objects.get_or_create(cart=cart, item = item_instance)
+			
+			if created:
+				flash_message = "Успешно добавлено в корзину"
+				item_added = True
 			if delete_item:
+				flash_message = "Успешно удалено из корзины"
 				cart_item.delete()
 			else:
+				if not created:
+					flash_message = "Количество изменено успешно"
 				cart_item.quantity = qty
 				cart_item.save()
+
+			if not request.is_ajax():
+				return HttpResponseRedirect(reverse('cart'))
+
+		if request.is_ajax():
+			try:
+				total = cart_item.line_item_total
+			except:
+				total = None
+
+			try:
+				subtotal = cart_item.cart.subtotal
+			except:
+				subtotal = None
+
+			data = {
+			"deleted": delete_item,
+			"item_added": item_added,
+			'line_total': total,
+			"subtotal":subtotal,
+			"flash_message":flash_message
+			
+			}
+
+			return JsonResponse(data)
 
 		context = {
 		'object': self.get_object()

@@ -1,9 +1,81 @@
 {% extends 'base.html' %}
 
+<script>
+{% block jquery %}
+$('.item-qty').change(function(){
+ // $(this).next('.btn-update').fadeIn();
+// event.preventDefault();
+	var item = $(this).prev("input[type='hidden']").val();
+	var qty = $(this).val();
+	var data  = {
+		item: item,
+		qty: qty,
+	}
+	console.log(data);
+	$.ajax({
+		type: "GET",
+		url: "{% url 'cart' %}",
+		data: data,
+		success: function(data) {
+			if (data.deleted){
+				$('#item-'+item).fadeOut();
+			} else{
+				$('#item-line-total-'+item).text(data.line_total);
+				$('#subtotal').text(data.subtotal);
+
+			}
+			var message = ""
+			if (data.item_added) {
+				message = "Новый товар добавлен"
+			} else if (data.deleted) { 
+				message = "Товар удален"
+			}
+			else {
+				message = "Товар обновлен"
+			}
+
+			showFlashMessage(message);
+		},
+		error: function(response, error){
+			$("#add-form").submit()
+		}
+	})
+});
+
+{% endblock %}
+
+</script>
+
+
+
 {% block content %}
 
-{{ object }}
-{{object.items.all}}
+
+<table class= "table">
+{% for item in object.cartitem_set.all %}
+<tr id='item-{{ item.item.id }}'>
+	
+	<td>{{item.item.get_title}}</td>
+	
+	<td><form action="" method = "GET"><input type="hidden" name = "item" value = '{{item.item.id}}'/><input type="number" 
+	class= "item-qty" name = "qty" value = '{{item.quantity}}'/><input type="submit" class= 'btn-update btn btn-link' style='display:None;' value = 'Обновить'/></td>
+	<td id='item-line-total-{{item.item.id}}'>{{item.line_item_total}}</td>
+	<td class = 'text-right' style = 'text-aligh: right;'><a href="{{ item.remove}}">X</a>
+
+	
+
+</td>
+
+</form>
+</tr>
+
+
+{% endfor%}
+
+<tr>
+	<td id="subtotal" colspan='4' class = 'text-right'>Промежуточный итог: {{ object.subtotal }}</td>
+</tr>
+</table>
 
 
 {% endblock %}

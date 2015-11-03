@@ -18,10 +18,44 @@ setPrice()
 $(".variation_select").change(function(){
 setPrice()
 })
+
+
+
+
+$("#submit-btn").click(function(event){
+	event.preventDefault();
+	var formData = $("#add-form").serialize();
+	console.log(formData);
+	$.ajax({
+		type: "GET",
+		url: "{% url 'cart' %}",
+		data: formData,
+		success: function(data) {
+			showFlashMessage(data.flash_message);
+
+			
+		},
+		error: function(response, error){
+			console.log(response)
+			console.log(error)
+		}
+	})
+
+
+
+	// $("#add-form").submit()
+
+})
+
+
+
+
 {% endblock %}
 </script>
 
 {% block content %}
+
+
 <div class = "row">
 <div class = "col-sm-8">
 <h2>{{object.title}}</h2>
@@ -44,6 +78,7 @@ setPrice()
 		<div class = "col-sm-4">
 
 		<form id='add-form' method='GET' action="{% url 'cart' %}">	
+
 			{% if object.variation_set.count > 1 %}
 			<h3 id='price'>{{object.variation_set.first.price}}</h3>
 		

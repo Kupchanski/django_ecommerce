@@ -10,7 +10,7 @@ class UserCheckout(models.Model):
 	email = models.EmailField(unique=True) #--> required
 
 
-	def __unicode__(self): #def __str__(self):
+	def __str__(self): 
 		return self.email
 
 ADDRESS_TYPES = (

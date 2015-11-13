@@ -4,9 +4,6 @@ from django.contrib.auth import get_user_model
 
 
 from .models import UserAddress
-
-
-
 User = get_user_model()
 
 class GuestCheckoutForm(forms.Form):

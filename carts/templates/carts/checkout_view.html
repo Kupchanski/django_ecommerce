@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+
+{% if not user_can_continue %}
+<div class ="col-sm-6">
+<p class = "lead"> Продолжить как гость</p>
+<form method = "POST" action=""> {% csrf_token %}
+{{form|crispy }}
+<input type= 'submit' class = 'btn btn-success' value = 'Продолжить как Гость'/>
+</form>
+</div>
+
+<div class ="col-sm-6">
+<p class = "lead">Войдите, чтобы продолжить</p>
+<form method="POST" action="{% url 'auth_login' %}"> {% csrf_token %}
+{{ login_form|crispy }}
+<input type='hidden' name = 'next' value ='{{ next_url }}'/>
+<input type="submit" class = 'btn btn-success' value = "Войти"/>
+</form>
+<p class="text-center">
+<p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+<p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+</p>
+</div>
+{% endif %}
+
+{% endblock %}
+
+

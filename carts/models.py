@@ -2,7 +2,7 @@ from decimal import Decimal
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.db.models.signals import pre_save, post_save
+from django.db.models.signals import pre_save, post_save, post_delete
 
 
 # Create your models here.
@@ -37,14 +37,15 @@ def cart_item_post_save_receiver(sender, instance, *args, **kwargs):
 
 post_save.connect(cart_item_post_save_receiver, sender=CartItem)
 
-
+post_delete.connect(cart_item_post_save_receiver, sender=CartItem)
 
 class Cart(models.Model):
 	user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True)
 	items = models.ManyToManyField(Variation, through = CartItem)
 	timestamp = models.DateTimeField(auto_now_add=True, auto_now=False)
 	updated = models.DateTimeField(auto_now_add=False, auto_now=True)
-	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0)
+	subtotal = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
+	total = models.DecimalField(max_digits=50, decimal_places=2, default=0.00)
 
 
 	def __str__(self):
@@ -63,3 +64,11 @@ class Cart(models.Model):
 	# taxes
 	# discounts
 	# totalprice
+def do_total_receiver(sender, instance, *args, **kwargs):
+	subtotal = instance.subtotal
+	total = subtotal
+	instance.total = total
+
+pre_save.connect(do_total_receiver, sender=Cart)
+
+

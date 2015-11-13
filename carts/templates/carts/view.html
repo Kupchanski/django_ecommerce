@@ -19,9 +19,19 @@ $('.item-qty').change(function(){
 		success: function(data) {
 			if (data.deleted){
 				$('#item-'+item).fadeOut();
+				$('#subtotal').text("Промежуточный итог:" + data.subtotal);
+				$('#total').text("Итог:" + data.total);
 			} else{
 				$('#item-line-total-'+item).text(data.line_total);
-				$('#subtotal').text(data.subtotal);
+				$('#subtotal').text("Промежуточный итог:" + data.subtotal);
+				$('#total').text("Итог:" + data.total);
+
+			}
+
+			if (data.total_items==0) {
+				$(".table").fadeOut()
+				var template = "{% include 'carts/empty_cart.html' %}";
+				$('.main-content').html(template);
 
 			}
 			var message = ""
@@ -35,6 +45,7 @@ $('.item-qty').change(function(){
 			}
 
 			showFlashMessage(message);
+			updateCartItemCount();
 		},
 		error: function(response, error){
 			$("#add-form").submit()
@@ -49,6 +60,13 @@ $('.item-qty').change(function(){
 
 
 {% block content %}
+
+<div class = "row main-content">
+{% if object.cartitem_set.count < 1 %}
+{% include "carts/empty_cart.html " %}
+
+
+{% else %}
 
 
 <table class= "table">
@@ -75,7 +93,11 @@ $('.item-qty').change(function(){
 <tr>
 	<td id="subtotal" colspan='4' class = 'text-right'>Промежуточный итог: {{ object.subtotal }}</td>
 </tr>
+<tr>
+	<td id="total" colspan='4' class = 'text-right'>Итог: {{ object.total }}</td>
+</tr>
 </table>
-
+{% endif %}
+</div>
 
 {% endblock %}
